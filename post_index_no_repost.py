@@ -16,7 +16,7 @@ def create_posts_no_reposts(id):
                 db.rollback()
         db.commit()
     except:
-        print("Unable to find data")
+        pass
 
 def find_newest_post_no_repost():
     sql_select = "SELECT MAX(original_id) FROM post_no_repost"
