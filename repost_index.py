@@ -17,11 +17,11 @@ def check_dupes_all():
                         cursor.execute(sql_insert)
                     except:
                         db.rollback()
-                    db.commit()
                 else:
                     pass
             except:
                 pass
+        db.commit()
     except:
         pass
 
