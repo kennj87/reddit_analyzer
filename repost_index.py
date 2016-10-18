@@ -18,7 +18,6 @@ def check_dupes_all():
                     except:
                         db.rollback()
                     db.commit()
-
                 else:
                     pass
             except:
