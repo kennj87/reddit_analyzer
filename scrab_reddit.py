@@ -58,7 +58,7 @@ def runs(runs):
                     cursor.execute(sql)
                 except:
                     db.rollback()
-            db.commit()
+        db.commit()
         runcount = runcount +1
         print(runcount)
         if runcount >= runs:
