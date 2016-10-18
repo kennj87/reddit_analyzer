@@ -1,16 +1,15 @@
 import praw
-import pymysql
 from fetch_newest import name_id
 from prawoauth2 import PrawOAuth2Mini
 from secrets import *
 from settings import *
+from database import db
+from database import cursor
 
 def runs(runs):
     runcount = 0
     runrep = 1
     while runrep == 1:
-        db = pymysql.connect("localhost","root","admin","reddit")
-        cursor = db.cursor()
         r = praw.Reddit(user_agent = USER_AGENT)
         oauth_helper = PrawOAuth2Mini(r,app_key = APP_KEY,app_secret = APP_SECRET,
                                         access_token = ACCESS_TOKEN,scopes = SCOPES,
@@ -30,8 +29,6 @@ def runs(runs):
         media = "none"
 
         def id_used(name):
-            db = pymysql.connect("localhost", "root", "admin", "reddit")
-            cursor = db.cursor()
             sql_get = "SELECT name FROM post_info WHERE name = '%s'" % (name)
             try:
                 cursor.execute(sql_get)
@@ -59,11 +56,11 @@ def runs(runs):
                     (author, title, subred, url, permalink, media, created, thumbnail, over_18, name)
                 try:
                     cursor.execute(sql)
-                    db.commit()
                 except:
                     db.rollback()
-        db.close()
+            db.commit()
         runcount = runcount +1
         print(runcount)
         if runcount >= runs:
             runrep = 0
+    db.close()

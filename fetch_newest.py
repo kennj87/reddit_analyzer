@@ -1,7 +1,5 @@
-import pymysql
-
-db = pymysql.connect("localhost","root","admin","reddit")
-cursor = db.cursor()
+from database import cursor
+from database import db
 
 def fetch_newest():
     sql_get = "SELECT name FROM post_info ORDER BY ID DESC limit 1"
@@ -14,5 +12,3 @@ def fetch_newest():
         print("Unable to find data")
 
 name_id = fetch_newest()
-
-db.close()
