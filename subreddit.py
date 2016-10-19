@@ -2,7 +2,7 @@ from database import db
 from database import cursor
 
 def add_subreddits():
-    sql_select = "SELECT subreddit FROM `post_info` GROUP BY subreddit ASC"
+    sql_select = "SELECT subreddit FROM post_info WHERE subreddit NOT IN (SELECT subreddit from subreddit) GROUP BY subreddit"
     try:
         cursor.execute(sql_select)
         result = cursor.fetchall()
@@ -17,3 +17,4 @@ def add_subreddits():
         pass
 
 add_subreddits()
+db.close()
