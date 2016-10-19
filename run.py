@@ -1,3 +1,3 @@
 from scrab_reddit import runs
 
-runs(1000)
+runs(100000)
