@@ -21,7 +21,6 @@ def check_dupes_all(db,cursor):
         db.commit()
     except:
         pass
-#UPDATE post_reposts SET repost_count = (SELECT COUNT(url) FROM post_info WHERE url = 'https://i.sli.mg/BB0X2C.png') WHERE url = 'https://i.sli.mg/BB0X2C.png'
 
 def check_dupes_update(db,cursor):
     sql_select = "SELECT url FROM post_reposts"
