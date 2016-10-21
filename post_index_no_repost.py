@@ -1,7 +1,4 @@
-from database import cursor
-from database import db
-
-def create_posts_no_reposts(id):
+def create_posts_no_reposts(id,db,cursor):
     if id == None:
         id = 0
     sql_select = "SELECT MIN(ID),url FROM `post_info` WHERE ID > %s GROUP BY URL ORDER BY MIN(ID) ASC" % (id)
@@ -18,14 +15,12 @@ def create_posts_no_reposts(id):
     except:
         pass
 
-def find_newest_post_no_repost():
+def find_newest_post_no_repost(db,cursor):
     sql_select = "SELECT MAX(original_id) FROM post_no_repost"
     try:
         cursor.execute(sql_select)
         result = cursor.fetchall()
         for row in result:
-            create_posts_no_reposts(row[0])
+            create_posts_no_reposts(row[0],db,cursor)
     except:
         pass
-find_newest_post_no_repost()
-db.close()

@@ -1,5 +1,5 @@
 def check_dupes_all(db,cursor):
-    sql_dupes = "SELECT y.id,y.author,y.url,counter FROM post_info y INNER JOIN (SELECT url, COUNT(*) AS counter FROM post_info GROUP BY url HAVING COUNT(*)>1) dt ON y.url=dt.url"
+    sql_dupes = "SELECT y.id,y.author,y.url,counter FROM post_info y INNER JOIN (SELECT url, COUNT(url) AS counter FROM post_info GROUP BY url HAVING COUNT(url)>1) dt ON y.url=dt.url"
     try:
         cursor.execute(sql_dupes)
         results = cursor.fetchall()
@@ -39,7 +39,7 @@ def check_dupes_update(db,cursor):
         pass
 
 def check_dupes_same_subreddit(db,cursor):
-    sql_dupes = "SELECT y.id,y.author,y.url,y.subreddit FROM post_info y INNER JOIN (SELECT url, COUNT(*) AS counter FROM post_info GROUP BY url HAVING COUNT(*)>1) dt ON y.url=dt.url AND y.subreddit=dt.subreddit"
+    sql_dupes = "SELECT y.id,y.author,y.url,y.subreddit FROM post_info y INNER JOIN (SELECT url, COUNT(url) AS counter FROM post_info GROUP BY url HAVING COUNT(url)>1) dt ON y.url=dt.url AND y.subreddit=dt.subreddit"
     try:
         cursor.execute(sql_dupes)
         results = cursor.fetchall()
