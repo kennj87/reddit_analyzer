@@ -1,5 +1,7 @@
 from repost_index import check_dupes_all,check_dupes_update
 from post_index_no_repost import find_newest_post_no_repost
+from subreddit import add_subreddits
+from users import add_users
 from database import db
 from database import cursor
 import time
@@ -55,7 +57,30 @@ def run_():
                 print("not time to update yet")
     except:
         pass
-
+    sql_update = "SELECT next_run,update_time FROM controller WHERE function = 'subreddit_insert'"
+    try:
+        cursor.execute(sql_update)
+        results = cursor.fetchall()
+        for update in results:
+            if int(time.time() >= update[0]):
+                update_controller("subreddit_insert", get_timestamp(update[1]))
+                add_subreddits(db, cursor)
+            elif int(time.time() <= update[0]):
+                print("not time to update yet")
+    except:
+        pass
+    sql_update = "SELECT next_run,update_time FROM controller WHERE function = 'user_insert'"
+    try:
+        cursor.execute(sql_update)
+        results = cursor.fetchall()
+        for update in results:
+            if int(time.time() >= update[0]):
+                update_controller("user_insert", get_timestamp(update[1]))
+                add_users(db, cursor)
+            elif int(time.time() <= update[0]):
+                print("not time to update yet")
+    except:
+        pass
 run_()
 db.close()
 print("--- %s seconds ---" % (time.time() - start_time))

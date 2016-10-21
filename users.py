@@ -1,7 +1,4 @@
-from database import db
-from database import cursor
-
-def add_subreddits():
+def add_users(db,cursor):
     sql_select = "SELECT author FROM post_info WHERE author NOT IN (SELECT name from users) GROUP BY author"
     try:
         cursor.execute(sql_select)
@@ -15,6 +12,3 @@ def add_subreddits():
         db.commit()
     except:
         pass
-
-add_subreddits()
-db.close()

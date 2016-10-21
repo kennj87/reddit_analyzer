@@ -1,7 +1,4 @@
-from database import db
-from database import cursor
-
-def add_subreddits():
+def add_subreddits(db,cursor):
     sql_select = "SELECT subreddit FROM post_info WHERE subreddit NOT IN (SELECT subreddit from subreddit) GROUP BY subreddit"
     try:
         cursor.execute(sql_select)
@@ -15,6 +12,3 @@ def add_subreddits():
         db.commit()
     except:
         pass
-
-add_subreddits()
-db.close()
