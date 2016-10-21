@@ -5,10 +5,8 @@ from users import add_users
 from database import db
 from database import cursor
 import time
-start_time = time.time()
 
-#check_dupes_all(db,cursor)
-#check_dupes_update(db,cursor)
+start_time = time.time()
 def get_timestamp(time):
     return int(start_time)+(60*time)
 
