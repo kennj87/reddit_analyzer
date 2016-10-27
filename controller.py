@@ -32,9 +32,8 @@ for key, val in run_it.items():
                 key(db, cursor)
                 update_controller(val, get_timestamp(update[1]), time_now)
             elif int(time.time() <= update[0]):
-                print(val)
+                pass
     except:
         pass
 
 db.close()
-print("--- %s seconds ---" % (time.time() - start_time))
