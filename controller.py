@@ -10,75 +10,31 @@ start_time = time.time()
 def get_timestamp(time):
     return int(start_time)+(60*time)
 
-def update_controller(func,time):
-    sql_update = "UPDATE controller SET next_run = '%s' WHERE function = '%s'" % (time,func)
+def update_controller(func,timer,runtime):
+    newtime = time.time() - runtime
+    sql_update = "UPDATE controller SET next_run = '%s', runtime = '%s' WHERE function = '%s'" % (timer,newtime,func)
     try:
         cursor.execute(sql_update)
         db.commit()
     except:
         pass
 
-def run_():
-    sql_get = "SELECT next_run,update_time FROM controller WHERE function = 'dupes_insert'"
-    try:
-        cursor.execute(sql_get)
-        result = cursor.fetchall()
-        for row in result:
-            if int(time.time() >= row[0]):
-                update_controller("dupes_insert",get_timestamp(row[1]))
-                check_dupes_all(db,cursor)
-            elif int(time.time() <= row[0]):
-                print("not time to update yet")
-    except:
-        pass
-    sql_update = "SELECT next_run,update_time FROM controller WHERE function = 'dupes_update'"
+run_it = {add_users:'user_insert', add_subreddits:'subreddit_insert', find_newest_post_no_repost:'post_no_repost', check_dupes_update:'dupes_update', check_dupes_all:'dupes_insert'}
+
+for key, val in run_it.items():
+    time_now = time.time()
+    sql_update = "SELECT next_run,update_time FROM controller WHERE function = '%s'" % (val)
     try:
         cursor.execute(sql_update)
         results = cursor.fetchall()
         for update in results:
             if int(time.time() >= update[0]):
-                update_controller("dupes_update", get_timestamp(update[1]))
-                check_dupes_update(db, cursor)
+                key(db, cursor)
+                update_controller(val, get_timestamp(update[1]), time_now)
             elif int(time.time() <= update[0]):
-                print("not time to update yet")
+                print(val)
     except:
         pass
-    sql_update = "SELECT next_run,update_time FROM controller WHERE function = 'post_no_repost'"
-    try:
-        cursor.execute(sql_update)
-        results = cursor.fetchall()
-        for update in results:
-            if int(time.time() >= update[0]):
-                update_controller("post_no_repost", get_timestamp(update[1]))
-                find_newest_post_no_repost(db,cursor)
-            elif int(time.time() <= update[0]):
-                print("not time to update yet")
-    except:
-        pass
-    sql_update = "SELECT next_run,update_time FROM controller WHERE function = 'subreddit_insert'"
-    try:
-        cursor.execute(sql_update)
-        results = cursor.fetchall()
-        for update in results:
-            if int(time.time() >= update[0]):
-                update_controller("subreddit_insert", get_timestamp(update[1]))
-                add_subreddits(db, cursor)
-            elif int(time.time() <= update[0]):
-                print("not time to update yet")
-    except:
-        pass
-    sql_update = "SELECT next_run,update_time FROM controller WHERE function = 'user_insert'"
-    try:
-        cursor.execute(sql_update)
-        results = cursor.fetchall()
-        for update in results:
-            if int(time.time() >= update[0]):
-                update_controller("user_insert", get_timestamp(update[1]))
-                add_users(db, cursor)
-            elif int(time.time() <= update[0]):
-                print("not time to update yet")
-    except:
-        pass
-run_()
+
 db.close()
 print("--- %s seconds ---" % (time.time() - start_time))
