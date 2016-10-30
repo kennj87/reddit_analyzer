@@ -4,7 +4,7 @@ def add_subreddits(db,cursor):
         cursor.execute(sql_select)
         result = cursor.fetchall()
         for row in result:
-            sql_insert = "INSERT INTO subreddit (subreddit, posts, most_active_user, last_post) VALUES ('%s', '0', 'not set yet', '0')" % (row[0])
+            sql_insert = "INSERT INTO subreddit (subreddit, posts, most_active_user, created) VALUES ('%s', '0', 'not set yet', '0')" % (row[0])
             try:
                 cursor.execute(sql_insert)
             except:
@@ -67,4 +67,12 @@ def update_subreddit_top_poster_update(db,cursor):
                 cursor.execute(sql_update)
             except:
                 pass
+    db.commit()
+
+def update_subreddit_time(db,cursor):
+    sql_update = "UPDATE subreddit,post_info SET subreddit.created = (SELECT post_info.created from post_info WHERE subreddit.subreddit = post_info.subreddit GROUP BY post_info.created LIMIT 1) WHERE post_info.subreddit = subreddit.subreddit AND subreddit.created = 0"
+    try:
+        cursor.execute(sql_update)
+    except:
+        pass
     db.commit()

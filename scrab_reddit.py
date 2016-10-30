@@ -5,6 +5,7 @@ from secrets import *
 from settings import *
 from database import db
 from database import cursor
+from time import time
 
 def runs():
     r = praw.Reddit(user_agent = USER_AGENT)
@@ -15,7 +16,7 @@ def runs():
     subreddit = r.get_subreddit('all')
 
     author = "none"
-    created = 0
+    created = int(time())
     over_18 = 0
     permalink = "none"
     subred = "none"
@@ -38,7 +39,7 @@ def runs():
 
     for post in reversed(list(subreddit.get_new(after=name_id))):
         author = str(vars(post)['author'])
-        created = int(vars(post)['created'])
+        created = time()
         over_18 = int(vars(post)['over_18'])
         permalink = str(vars(post)['permalink'])
         subred = str(vars(post)['subreddit'])

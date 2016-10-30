@@ -4,7 +4,7 @@ def add_users(db,cursor):
         cursor.execute(sql_select)
         result = cursor.fetchall()
         for row in result:
-            sql_insert = "INSERT INTO users (name, posts) VALUES ('%s', '0')" % (row[0])
+            sql_insert = "INSERT INTO users (name, posts, created) VALUES ('%s', '0', '0')" % (row[0])
             try:
                 cursor.execute(sql_insert)
             except:
