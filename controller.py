@@ -1,7 +1,7 @@
 from repost_index import check_dupes_all,check_dupes_update
 from post_index_no_repost import find_newest_post_no_repost
 from subreddit import add_subreddits,update_subreddit_posts,update_subreddit_top_poster_new,update_subreddit_top_poster_update,update_subreddit_time
-from users import add_users
+from users import add_users,update_users_posts,update_users_time
 from database import db
 from database import cursor
 import time
@@ -25,6 +25,8 @@ run_it = {
     update_subreddit_posts:'subreddit_posts',
     update_subreddit_time:'subreddit_time',
     add_users:'user_insert',
+    update_users_posts:'users_posts',
+    update_users_time:'users_time',
     add_subreddits:'subreddit_insert',
     find_newest_post_no_repost:'post_no_repost',
     check_dupes_update:'dupes_update',
