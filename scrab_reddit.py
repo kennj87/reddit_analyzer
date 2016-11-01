@@ -37,7 +37,7 @@ def runs():
         except:
             pass
 
-    for post in reversed(list(subreddit.get_new(after=name_id))):
+    for post in reversed(list(subreddit.get_new(limit=1000))):
         author = str(vars(post)['author'])
         created = time()
         over_18 = int(vars(post)['over_18'])
