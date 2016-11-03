@@ -3,11 +3,9 @@ from fetch_newest import name_id
 from prawoauth2 import PrawOAuth2Mini
 from secrets import *
 from settings import *
-from database import db
-from database import cursor
 from time import time
 
-def runs():
+def runs(db,cursor):
     r = praw.Reddit(user_agent = USER_AGENT)
     oauth_helper = PrawOAuth2Mini(r,app_key = APP_KEY,app_secret = APP_SECRET,
                                     access_token = ACCESS_TOKEN,scopes = SCOPES,
@@ -56,5 +54,4 @@ def runs():
                 cursor.execute(sql)
             except:
                 db.rollback()
-        db.commit()
-    db.close()
+    db.commit()
