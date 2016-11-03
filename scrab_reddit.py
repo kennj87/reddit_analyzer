@@ -26,16 +26,16 @@ def runs():
     name = "none"
     media = "none"
 
-    def id_used(name):
-        sql_get = "SELECT name FROM post_info WHERE name = '%s'" % (name)
-        try:
-            cursor.execute(sql_get)
-            if not cursor.rowcount:
-                return True
-            else:
-                return False
-        except:
-            pass
+    lookup = {}
+
+    sql_fetch = "SELECT name from post_info"
+    try:
+        cursor.execute(sql_fetch)
+        result = cursor.fetchall()
+        for row in result:
+            lookup[row[0]] = None
+    except:
+        pass
 
     for post in reversed(list(subreddit.get_new(limit=1000))):
         author = str(vars(post)['author'])
@@ -48,12 +48,13 @@ def runs():
         url = str(vars(post)['url'])
         name = str(vars(post)['name'])
         media = str(vars(post)['media'])
-        if id_used(name):
+        if name not in lookup:
             sql = "INSERT INTO `post_info` (`ID`, `author`, `title`, `subreddit`, `url`, `permalink`, `media`, `created`, `thumbnail`, `over_18`, `name`) " \
                 "VALUES (NULL, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % \
                 (author, title, subred, url, permalink, media, created, thumbnail, over_18, name)
             try:
                 cursor.execute(sql)
-                db.commit()
             except:
                 db.rollback()
+        db.commit()
+    db.close()
