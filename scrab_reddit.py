@@ -52,6 +52,6 @@ def runs(db,cursor):
                 (author, title, subred, url, permalink, media, created, thumbnail, over_18, name)
             try:
                 cursor.execute(sql)
+                db.commit()
             except:
                 db.rollback()
-    db.commit()
