@@ -19,5 +19,5 @@ def check_duplicates():
                 pass
     except:
         pass
-
+check_duplicates()
 db.close
