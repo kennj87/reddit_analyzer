@@ -64,11 +64,12 @@ def runs(db,cursor):
         titleformat = db.escape(re.sub('[^a-zA-Z0-9 \n\.]','',title))
         url = str(vars(post)['url'])
         name = str(vars(post)['name'])
+        if thumbnail == "self":
+            url = fixurl(url)
         if name not in lookup:
             sql_insert = "INSERT INTO `post_info` (`author`, `title`, `subreddit`, `url`, `permalink`,`created`, `thumbnail`, `over_18`, `name`)  VALUES ('%s', %s, '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (author, titleformat, subred, url, permalinkfix, created, thumbnail, over_18, name)
             try:
                 cursor.execute(sql_insert)
             except:
-                print(sql_insert)
                 db.rollback()
         db.commit()
