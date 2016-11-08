@@ -34,7 +34,7 @@ def runs(db,cursor):
             lookup[row[0]] = None
     except:
         pass
-
+    a = ""
     for post in reversed(list(subreddit.get_new(limit=1000))):
         author = str(vars(post)['author'])
         created = time()
@@ -47,11 +47,12 @@ def runs(db,cursor):
         name = str(vars(post)['name'])
         media = str(vars(post)['media'])
         if name not in lookup:
-            sql = "INSERT INTO `post_info` (`ID`, `author`, `title`, `subreddit`, `url`, `permalink`, `media`, `created`, `thumbnail`, `over_18`, `name`) " \
-                "VALUES (NULL, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % \
-                (author, title, subred, url, permalink, media, created, thumbnail, over_18, name)
-            try:
-                cursor.execute(sql)
-                db.commit()
-            except:
-                db.rollback()
+            b = ",('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (author, title, subred, url, permalink, media, created, thumbnail, over_18, name)
+            a = a + b
+    sql_insert = "INSERT INTO `post_info` (`author`, `title`, `subreddit`, `url`, `permalink`, `media`, `created`, `thumbnail`, `over_18`, `name`)  VALUES %s" % (a[1:])
+    try:
+        cursor.execute(sql_insert)
+        db.commit()
+    except:
+        db.rollback()
+    db.close()
