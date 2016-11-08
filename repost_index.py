@@ -11,7 +11,6 @@ def check_dupes_all(db,cursor):
                 b = ",('%s', '%s', '%s', '%s')" % (row[2], row[1], row[0], row[3]-1)
                 a = a + b
         sql_insert = "INSERT INTO post_reposts (url, author, post_id, repost_count) VALUES %s" % (a[1:])
-        print(sql_insert)
         try:
             cursor.execute(sql_insert)
         except:
