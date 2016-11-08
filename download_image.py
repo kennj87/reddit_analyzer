@@ -18,7 +18,6 @@ def get_image_from_database(db,cursor):
             image_id = row[0]
             process_id = row[1]
             image_url = row[2]
-            print(image_url," ",image_id, " ",process_id)
             download_image(image_url,process_id,image_id,db,cursor)
     except:
         pass
