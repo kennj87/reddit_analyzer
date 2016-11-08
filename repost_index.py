@@ -13,9 +13,9 @@ def check_dupes_all(db,cursor):
         sql_insert = "INSERT INTO post_reposts (url, author, post_id, repost_count) VALUES %s" % (a[1:])
         try:
             cursor.execute(sql_insert)
+            db.commit()
         except:
             db.rollback()
-        db.commit()
     except:
         pass
 

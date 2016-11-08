@@ -10,9 +10,17 @@ start_time = time.time()
 def get_timestamp(time):
     return int(start_time)+(60*time)
 
-def update_controller(func,timer,runtime):
+def update_controller(timer,func):
+    sql_update = "UPDATE controller SET next_run = '%s' WHERE function = '%s'" % (func,timer)
+    try:
+        cursor.execute(sql_update)
+        db.commit()
+    except:
+        pass
+
+def update_controller_runtime(func,runtime):
     newtime = time.time() - runtime
-    sql_update = "UPDATE controller SET next_run = '%s', runtime = '%s' WHERE function = '%s'" % (timer,newtime,func)
+    sql_update = "UPDATE controller SET runtime = '%s' WHERE function = '%s'" % (newtime, func)
     try:
         cursor.execute(sql_update)
         db.commit()
@@ -41,11 +49,11 @@ for key, val in run_it.items():
         results = cursor.fetchall()
         for update in results:
             if int(time.time() >= update[0]):
+                update_controller(val, get_timestamp(update[1]))
                 key(db, cursor)
-                update_controller(val, get_timestamp(update[1]), time_now)
+                update_controller_runtime(val, time_now)
             elif int(time.time() <= update[0]):
                 pass
     except:
         pass
-
 db.close()

@@ -1,15 +1,18 @@
 def add_subreddits(db,cursor):
     sql_select = "SELECT subreddit FROM post_info WHERE subreddit NOT IN (SELECT subreddit from subreddit) GROUP BY subreddit"
+    a = ""
     try:
         cursor.execute(sql_select)
         result = cursor.fetchall()
         for row in result:
-            sql_insert = "INSERT INTO subreddit (subreddit, posts, most_active_user, created) VALUES ('%s', '0', 'not set yet', '0')" % (row[0])
-            try:
-                cursor.execute(sql_insert)
-            except:
-                db.rollback()
-        db.commit()
+            b = ",('%s', '0', 'not set yet', '0')" % (row[0])
+            a = a + b
+        sql_insert = "INSERT INTO subreddit (subreddit, posts, most_active_user, created) VALUES %s" % (a[1:])
+        try:
+            cursor.execute(sql_insert)
+            db.commit()
+        except:
+            db.rollback()
     except:
         pass
 
