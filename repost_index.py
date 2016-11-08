@@ -1,5 +1,6 @@
 def check_dupes_all(db,cursor):
     sql_dupes = "SELECT y.id,y.author,y.url,counter FROM post_info y INNER JOIN (SELECT url, COUNT(url) AS counter FROM post_info GROUP BY url HAVING COUNT(url)>1) dt ON y.url=dt.url WHERE y.url NOT IN (SELECT url FROM post_reposts)"
+    a = ""
     try:
         cursor.execute(sql_dupes)
         results = cursor.fetchall()
@@ -7,11 +8,14 @@ def check_dupes_all(db,cursor):
         for row in results:
             if row[2] not in posts:
                 posts.append(row[2])
-                sql_insert = "INSERT INTO post_reposts (url, author, post_id, repost_count) VALUES ('%s', '%s', '%s', '%s')" % (row[2], row[1], row[0], row[3]-1)
-                try:
-                    cursor.execute(sql_insert)
-                except:
-                    db.rollback()
+                b = ",('%s', '%s', '%s', '%s')" % (row[2], row[1], row[0], row[3]-1)
+                a = a + b
+        sql_insert = "INSERT INTO post_reposts (url, author, post_id, repost_count) VALUES %s" % (a[1:])
+        print(sql_insert)
+        try:
+            cursor.execute(sql_insert)
+        except:
+            db.rollback()
         db.commit()
     except:
         pass

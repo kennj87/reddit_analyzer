@@ -7,7 +7,7 @@ def see_if_it_runs():
         runs(db,cursor)
         db.close
         print("ran scrab")
-    threading.Timer(1.0, see_if_it_runs).start()
+    threading.Timer(5.0, see_if_it_runs).start()
 
 def check_if_run():
     sql = "SELECT next_run FROM controller WHERE function = 'run'"
