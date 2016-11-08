@@ -5,7 +5,6 @@ import threading
 def see_if_it_runs():
     if check_if_run():
         runs(db,cursor)
-        db.close
         print("ran scrab")
     threading.Timer(5.0, see_if_it_runs).start()
 

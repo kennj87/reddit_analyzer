@@ -4,6 +4,23 @@ from prawoauth2 import PrawOAuth2Mini
 from secrets import *
 from settings import *
 from time import time
+import re
+
+def strincount(string):
+    i = 0
+    e = 0
+    for c in string:
+        if c == "/":
+            e = e + 1
+        i = i + 1
+        if (e == 2):
+            return i
+
+def fixurl(string):
+    s = string
+    srev = s[::-1]
+    fixed = srev[strincount(srev)::]
+    return fixed[::-1]
 
 def runs(db,cursor):
     r = praw.Reddit(user_agent = USER_AGENT)
@@ -30,29 +47,28 @@ def runs(db,cursor):
     try:
         cursor.execute(sql_fetch)
         result = cursor.fetchall()
+        db.commit()
         for row in result:
             lookup[row[0]] = None
     except:
         pass
-    a = ""
     for post in reversed(list(subreddit.get_new(limit=1000))):
         author = str(vars(post)['author'])
         created = time()
         over_18 = int(vars(post)['over_18'])
         permalink = str(vars(post)['permalink'])
+        permalinkfix = fixurl(permalink)
         subred = str(vars(post)['subreddit'])
         thumbnail = str(vars(post)['thumbnail'])
         title = str(vars(post)['title'])
+        titleformat = db.escape(re.sub('[^a-zA-Z0-9 \n\.]','',title))
         url = str(vars(post)['url'])
         name = str(vars(post)['name'])
-        media = str(vars(post)['media'])
         if name not in lookup:
-            b = ",('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (author, title, subred, url, permalink, media, created, thumbnail, over_18, name)
-            a = a + b
-    sql_insert = "INSERT INTO `post_info` (`author`, `title`, `subreddit`, `url`, `permalink`, `media`, `created`, `thumbnail`, `over_18`, `name`)  VALUES %s" % (a[1:])
-    try:
-        cursor.execute(sql_insert)
+            sql_insert = "INSERT INTO `post_info` (`author`, `title`, `subreddit`, `url`, `permalink`,`created`, `thumbnail`, `over_18`, `name`)  VALUES ('%s', %s, '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (author, titleformat, subred, url, permalinkfix, created, thumbnail, over_18, name)
+            try:
+                cursor.execute(sql_insert)
+            except:
+                print(sql_insert)
+                db.rollback()
         db.commit()
-    except:
-        db.rollback()
-    db.close()
