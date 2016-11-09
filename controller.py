@@ -11,7 +11,7 @@ def get_timestamp(time):
     return int(start_time)+(60*time)
 
 def update_controller(timer,func):
-    sql_update = "UPDATE controller SET next_run = '%s' WHERE function = '%s'" % (func,timer)
+    sql_update = "UPDATE controller SET next_run = '%s', status = 'running' WHERE function = '%s'" % (func,timer)
     try:
         cursor.execute(sql_update)
         db.commit()
@@ -20,7 +20,7 @@ def update_controller(timer,func):
 
 def update_controller_runtime(func,runtime):
     newtime = time.time() - runtime
-    sql_update = "UPDATE controller SET runtime = '%s' WHERE function = '%s'" % (newtime, func)
+    sql_update = "UPDATE controller SET runtime = '%s', status = 'inactive' WHERE function = '%s'" % (newtime, func)
     try:
         cursor.execute(sql_update)
         db.commit()
