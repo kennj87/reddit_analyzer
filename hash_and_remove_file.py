@@ -33,25 +33,6 @@ def check_unique_hash(hash,db,cursor):
     except:
         pass
 
-def add_unique_hash(hash,id,db,cursor):
-    sql_insert = "INSERT INTO hashes_duplicates (original_id, hash, duplicates) VALUES ('%s', '%s', '')" % (id, hash)
-    try:
-        cursor.execute(sql_insert)
-        db.commit()
-    except:
-        db.rollback()
-
-def itterate_hashes(db,cursor):
-    sql = "SELECT post_id,hash FROM hashes"
-    try:
-        cursor.execute(sql)
-        db.commit()
-        results = cursor.fetchall()
-        for row in results:
-            if check_unique_hash(row[1],db,cursor):
-                add_unique_hash(row[1],row[0],db,cursor)
-    except:
-        pass
 
 def update_image_process(id,db,cursor):
     sql_update = "UPDATE image_process SET is_hashed = 1 WHERE post_id = %s" % (id)
@@ -76,7 +57,6 @@ def hash_images(db,cursor):
         try:
             hash = dhash(Image.open("/home/kenneth/dlimage/"+file))
             hash_to_mysql(hash,file,db,cursor)
-            itterate_hashes(db,cursor)
         except:
             pass
     filelist = glob.glob("/home/kenneth/dlimage/*")
